@@ -1,0 +1,16 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npx create-expo-app@latest grabbit --template tabs)",
+      "Bash(npx expo:*)",
+      "Bash(rm -f app/\\\\\\(tabs\\\\\\)/index.tsx app/\\\\\\(tabs\\\\\\)/two.tsx app/modal.tsx app/+html.tsx)",
+      "Bash(rm -f components/EditScreenInfo.tsx components/ExternalLink.tsx components/StyledText.tsx components/Themed.tsx components/useClientOnlyValue.ts components/useClientOnlyValue.web.ts components/__tests__/StyledText-test.js)",
+      "Bash(mkdir -p app/\\\\\\(auth\\\\\\))",
+      "Bash(npx eas-cli:*)",
+      "Bash(shopt -s dotglob)",
+      "Bash(mv * ../)",
+      "Bash(rmdir /Users/radha/Desktop/listy/client/grabbit)",
+      "Bash(mv .env .gitignore .vscode ../)"
+    ]
+  }
+}
