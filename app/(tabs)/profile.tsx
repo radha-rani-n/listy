@@ -11,7 +11,7 @@ import {
 } from "react-native";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import { useRouter } from "expo-router";
-import { getMe, updateProfile, updateSettings, signOut, UserSettings } from "@/lib/api";
+import { getMe, updateProfile, updateSettings, signOut, UserSettings, getCurrentUser } from "@/lib/api";
 import ResponsiveContainer from "@/components/ResponsiveContainer";
 
 const STRIKE_STYLES: { value: UserSettings["strikeStyle"]; label: string; desc: string }[] = [
@@ -48,9 +48,11 @@ export default function ProfileScreen() {
     async function load() {
       try {
         const user = await getMe();
-        setDisplayName(user.display_name);
-        setEmail(user.email);
-        setSettings(user.settings);
+        if (user) {
+          setDisplayName(user.display_name);
+          setEmail(user.email);
+          setSettings(user.settings);
+        }
       } catch (err) {
         console.error(err);
       }
@@ -103,7 +105,26 @@ export default function ProfileScreen() {
     );
   }
 
+  const isGuest = !getCurrentUser();
   const qtyUnits = settings.measurementSystem === "metric" ? QTY_UNITS_METRIC : QTY_UNITS_IMPERIAL;
+
+  if (isGuest) {
+    return (
+      <ResponsiveContainer>
+      <View className="flex-1 bg-background items-center justify-center px-6">
+        <FontAwesome name="user-circle" size={64} color="#D1D5DB" />
+        <Text className="text-xl font-bold text-textPrimary mt-4">Sign in to access settings</Text>
+        <Text className="text-textSecondary mt-1 text-center">Create an account to save lists, sync across devices, and share with others</Text>
+        <TouchableOpacity className="bg-primary rounded-lg px-8 py-3.5 mt-6" onPress={() => router.push("/(auth)/sign-in")} activeOpacity={0.8}>
+          <Text className="text-white font-semibold text-base">Sign In</Text>
+        </TouchableOpacity>
+        <TouchableOpacity className="mt-3" onPress={() => router.push("/(auth)/sign-up")} activeOpacity={0.8}>
+          <Text className="text-primary font-semibold">Create Account</Text>
+        </TouchableOpacity>
+      </View>
+      </ResponsiveContainer>
+    );
+  }
 
   return (
     <ResponsiveContainer>

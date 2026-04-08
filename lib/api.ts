@@ -99,7 +99,7 @@ const DEFAULT_SETTINGS: UserSettings = {
 
 export async function getMe() {
   const user = auth.currentUser;
-  if (!user) throw new Error("Not authenticated");
+  if (!user) return null;
   const snap = await getDoc(doc(db, "users", user.uid));
   const data = snap.data() as any;
   return {
@@ -155,7 +155,7 @@ export async function updateSettings(settings: Partial<UserSettings>) {
 
 export async function fetchLists() {
   const user = auth.currentUser;
-  if (!user) throw new Error("Not authenticated");
+  if (!user) return [];
 
   const q = query(
     collection(db, "lists"),
@@ -370,7 +370,7 @@ export async function joinByInvite(code: string) {
 
 export async function fetchPantryItems() {
   const user = auth.currentUser;
-  if (!user) throw new Error("Not authenticated");
+  if (!user) return [];
 
   const q = query(
     collection(db, "pantryItems"),
@@ -445,7 +445,7 @@ export async function deletePantryItem(id: string) {
 
 export async function fetchMeals(from: string, to: string) {
   const user = auth.currentUser;
-  if (!user) throw new Error("Not authenticated");
+  if (!user) return [];
 
   const q = query(
     collection(db, "mealPlans"),
@@ -592,7 +592,7 @@ export async function isFavorite(itemName: string): Promise<boolean> {
 
 export async function getOtherLists(excludeListId: string) {
   const user = auth.currentUser;
-  if (!user) throw new Error("Not authenticated");
+  if (!user) return [];
 
   const q = query(
     collection(db, "lists"),
@@ -648,7 +648,7 @@ export type Recipe = {
 
 export async function fetchRecipes(): Promise<Recipe[]> {
   const user = auth.currentUser;
-  if (!user) throw new Error("Not authenticated");
+  if (!user) return [];
 
   const q = query(
     collection(db, "recipes"),

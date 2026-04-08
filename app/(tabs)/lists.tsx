@@ -10,6 +10,7 @@ import {
 import { useRouter } from "expo-router";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import { fetchLists as apiFetchLists } from "@/lib/api";
+import { requireAuth } from "@/lib/authGuard";
 import ResponsiveContainer from "@/components/ResponsiveContainer";
 
 type ListRow = {
@@ -100,10 +101,10 @@ export default function ListsScreen() {
           <Text className="text-xl font-bold text-textPrimary mt-4">No lists yet</Text>
           <Text className="text-textSecondary mt-1 text-center">Create a shopping list or join one with an invite code</Text>
           <View className="flex-row gap-3 mt-6">
-            <TouchableOpacity className="bg-primary rounded-lg px-5 py-3" onPress={() => router.push("/list/create")}>
+            <TouchableOpacity className="bg-primary rounded-lg px-5 py-3" onPress={() => { if (requireAuth()) router.push("/list/create"); }}>
               <Text className="text-white font-semibold">Create List</Text>
             </TouchableOpacity>
-            <TouchableOpacity className="border border-primary rounded-lg px-5 py-3" onPress={() => router.push("/list/join")}>
+            <TouchableOpacity className="border border-primary rounded-lg px-5 py-3" onPress={() => { if (requireAuth()) router.push("/list/join"); }}>
               <Text className="text-primary font-semibold">Join List</Text>
             </TouchableOpacity>
           </View>
@@ -156,10 +157,10 @@ export default function ListsScreen() {
             )}
           />
           <View className="absolute bottom-6 right-4 left-4 flex-row gap-3">
-            <TouchableOpacity className="flex-1 bg-primary rounded-xl py-3.5 items-center" onPress={() => router.push("/list/create")}>
+            <TouchableOpacity className="flex-1 bg-primary rounded-xl py-3.5 items-center" onPress={() => { if (requireAuth()) router.push("/list/create"); }}>
               <Text className="text-white font-semibold">Create List</Text>
             </TouchableOpacity>
-            <TouchableOpacity className="border border-primary rounded-xl py-3.5 px-5 items-center" onPress={() => router.push("/list/join")}>
+            <TouchableOpacity className="border border-primary rounded-xl py-3.5 px-5 items-center" onPress={() => { if (requireAuth()) router.push("/list/join"); }}>
               <Text className="text-primary font-semibold">Join</Text>
             </TouchableOpacity>
           </View>
