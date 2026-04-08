@@ -5,6 +5,7 @@ import {
 } from "react-native";
 import { Stack, useRouter } from "expo-router";
 import { addRecipe } from "@/lib/api";
+import ResponsiveContainer from "@/components/ResponsiveContainer";
 
 export default function ImportRecipeScreen() {
   const router = useRouter();
@@ -95,6 +96,7 @@ export default function ImportRecipeScreen() {
   }
 
   return (
+    <ResponsiveContainer>
     <KeyboardAvoidingView className="flex-1 bg-background" behavior={Platform.OS === "ios" ? "padding" : "height"}>
       <Stack.Screen options={{ title: "Import Recipe" }} />
       <View className="px-6 pt-6">
@@ -121,5 +123,6 @@ export default function ImportRecipeScreen() {
         </TouchableOpacity>
       </View>
     </KeyboardAvoidingView>
+    </ResponsiveContainer>
   );
 }

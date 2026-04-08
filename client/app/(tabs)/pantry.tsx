@@ -11,6 +11,7 @@ import { useRouter } from "expo-router";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import SwipeToDelete from "@/components/SwipeToDelete";
 import { fetchPantryItems, deletePantryItem } from "@/lib/api";
+import ResponsiveContainer from "@/components/ResponsiveContainer";
 
 type PantryItem = {
   id: string;
@@ -89,6 +90,7 @@ export default function PantryScreen() {
   const isEmpty = sections.length === 0;
 
   return (
+    <ResponsiveContainer>
     <View className="flex-1 bg-background">
       {isEmpty ? (
         <View className="flex-1 items-center justify-center px-6">
@@ -180,5 +182,6 @@ export default function PantryScreen() {
         </>
       )}
     </View>
+    </ResponsiveContainer>
   );
 }

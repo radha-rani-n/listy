@@ -3,6 +3,7 @@ import { View, Text, TextInput, TouchableOpacity, ActivityIndicator, Alert, Scro
 import { Stack, useLocalSearchParams, useRouter } from "expo-router";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import { getMeal, deleteMeal, fetchLists, addIngredientsToList } from "@/lib/api";
+import ResponsiveContainer from "@/components/ResponsiveContainer";
 
 type MealPlan = { id: string; date: string; meal_type: string; recipe_name: string; notes: string | null };
 type ListOption = { id: string; name: string };
@@ -70,6 +71,7 @@ export default function MealDetailScreen() {
   if (!meal) return <View className="flex-1 items-center justify-center bg-background"><Text className="text-textSecondary">Meal not found.</Text></View>;
 
   return (
+    <ResponsiveContainer>
     <KeyboardAvoidingView className="flex-1 bg-background" behavior={Platform.OS === "ios" ? "padding" : "height"}>
       <Stack.Screen options={{ title: meal.recipe_name, headerShown: true, headerRight: () => <TouchableOpacity className="mr-2" onPress={handleDelete}><FontAwesome name="trash-o" size={20} color="#EF4444" /></TouchableOpacity> }} />
       <ScrollView contentContainerClassName="px-6 pt-6 pb-10">
@@ -109,5 +111,6 @@ export default function MealDetailScreen() {
         )}
       </ScrollView>
     </KeyboardAvoidingView>
+    </ResponsiveContainer>
   );
 }

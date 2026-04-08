@@ -7,6 +7,7 @@ import { Stack, useRouter } from "expo-router";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import * as ImagePicker from "expo-image-picker";
 import { addRecipe, RecipeIngredient } from "@/lib/api";
+import ResponsiveContainer from "@/components/ResponsiveContainer";
 
 export default function AddRecipeScreen() {
   const router = useRouter();
@@ -77,6 +78,7 @@ export default function AddRecipeScreen() {
   }
 
   return (
+    <ResponsiveContainer>
     <KeyboardAvoidingView className="flex-1 bg-background" behavior={Platform.OS === "ios" ? "padding" : "height"}>
       <Stack.Screen options={{ title: "Add Recipe" }} />
       <ScrollView contentContainerClassName="px-6 pt-4 pb-10" keyboardShouldPersistTaps="handled">
@@ -133,5 +135,6 @@ export default function AddRecipeScreen() {
         </TouchableOpacity>
       </ScrollView>
     </KeyboardAvoidingView>
+    </ResponsiveContainer>
   );
 }

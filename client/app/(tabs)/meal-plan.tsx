@@ -14,6 +14,7 @@ import * as Print from "expo-print";
 import * as Sharing from "expo-sharing";
 import * as Calendar from "expo-calendar";
 import { fetchMeals } from "@/lib/api";
+import ResponsiveContainer from "@/components/ResponsiveContainer";
 
 type MealPlan = {
   id: string;
@@ -151,6 +152,7 @@ export default function MealPlanScreen() {
   const isEmpty = meals.length === 0;
 
   return (
+    <ResponsiveContainer>
     <View className="flex-1 bg-background">
       {isEmpty ? (
         <View className="flex-1 items-center justify-center px-6">
@@ -223,5 +225,6 @@ export default function MealPlanScreen() {
         </View>
       )}
     </View>
+    </ResponsiveContainer>
   );
 }

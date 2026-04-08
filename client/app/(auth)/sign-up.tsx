@@ -11,6 +11,7 @@ import {
 } from "react-native";
 import { Link, useRouter } from "expo-router";
 import { signUp } from "@/lib/api";
+import ResponsiveContainer from "@/components/ResponsiveContainer";
 
 export default function SignUpScreen() {
   const [email, setEmail] = useState("");
@@ -48,6 +49,7 @@ export default function SignUpScreen() {
       className="flex-1 bg-background"
       behavior={Platform.OS === "ios" ? "padding" : "height"}
     >
+      <ResponsiveContainer>
       <ScrollView
         contentContainerClassName="flex-1 justify-center px-6"
         keyboardShouldPersistTaps="handled"
@@ -127,6 +129,7 @@ export default function SignUpScreen() {
           </Link>
         </View>
       </ScrollView>
+      </ResponsiveContainer>
     </KeyboardAvoidingView>
   );
 }

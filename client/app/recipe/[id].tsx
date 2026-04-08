@@ -8,6 +8,7 @@ import FontAwesome from "@expo/vector-icons/FontAwesome";
 import {
   getRecipe, deleteRecipe, fetchLists, addRecipeIngredientsToList, Recipe,
 } from "@/lib/api";
+import ResponsiveContainer from "@/components/ResponsiveContainer";
 
 export default function RecipeDetailScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
@@ -102,6 +103,7 @@ export default function RecipeDetailScreen() {
   }
 
   return (
+    <ResponsiveContainer>
     <View className="flex-1 bg-background">
       <Stack.Screen
         options={{
@@ -219,5 +221,6 @@ export default function RecipeDetailScreen() {
         </View>
       </ScrollView>
     </View>
+    </ResponsiveContainer>
   );
 }

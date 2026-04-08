@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { View, Text, TextInput, TouchableOpacity, ActivityIndicator, ScrollView, KeyboardAvoidingView, Platform } from "react-native";
 import { Stack, useRouter, useLocalSearchParams } from "expo-router";
 import { getPantryItem, updatePantryItem } from "@/lib/api";
+import ResponsiveContainer from "@/components/ResponsiveContainer";
 
 const CATEGORIES = ["Produce", "Dairy", "Meat", "Bakery", "Frozen", "Beverages", "Pantry", "Snacks", "Household", "Other"];
 
@@ -68,6 +69,7 @@ export default function EditPantryItemScreen() {
   }
 
   return (
+    <ResponsiveContainer>
     <KeyboardAvoidingView className="flex-1 bg-background" behavior={Platform.OS === "ios" ? "padding" : "height"}>
       <Stack.Screen options={{ title: "Edit Pantry Item", headerShown: true }} />
       <ScrollView contentContainerClassName="px-6 pt-6 pb-10" keyboardShouldPersistTaps="handled">
@@ -99,5 +101,6 @@ export default function EditPantryItemScreen() {
         </TouchableOpacity>
       </ScrollView>
     </KeyboardAvoidingView>
+    </ResponsiveContainer>
   );
 }

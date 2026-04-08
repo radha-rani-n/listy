@@ -21,6 +21,7 @@ import * as Clipboard from "expo-clipboard";
 import * as Print from "expo-print";
 import * as Sharing from "expo-sharing";
 import SwipeToDelete from "@/components/SwipeToDelete";
+import ResponsiveContainer from "@/components/ResponsiveContainer";
 import {
   getList,
   fetchListItems,
@@ -419,6 +420,7 @@ export default function ListDetailScreen() {
   }
 
   return (
+    <ResponsiveContainer>
     <View className="flex-1 bg-background">
       <Stack.Screen
         options={{
@@ -884,5 +886,6 @@ export default function ListDetailScreen() {
         </KeyboardAvoidingView>
       </Modal>
     </View>
+    </ResponsiveContainer>
   );
 }

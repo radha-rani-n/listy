@@ -3,6 +3,7 @@ import { View, Text, TextInput, TouchableOpacity, ActivityIndicator, ScrollView 
 import { Stack, useRouter } from "expo-router";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import { createList } from "@/lib/api";
+import ResponsiveContainer from "@/components/ResponsiveContainer";
 
 const ICONS = ["shopping-cart", "list-ul", "gift", "home", "briefcase", "heart", "star", "plane", "cutlery", "birthday-cake", "paw", "car"];
 const COLORS = ["#4F46E5", "#10B981", "#EF4444", "#F59E0B", "#8B5CF6", "#EC4899", "#06B6D4", "#84CC16", "#F97316"];
@@ -30,6 +31,7 @@ export default function CreateListScreen() {
   }
 
   return (
+    <ResponsiveContainer>
     <ScrollView className="flex-1 bg-background" contentContainerClassName="px-6 pt-6 pb-10">
       <Stack.Screen options={{ title: "Create List" }} />
 
@@ -75,5 +77,6 @@ export default function CreateListScreen() {
         {loading ? <ActivityIndicator color="#fff" /> : <Text className="text-white font-semibold text-base">Create List</Text>}
       </TouchableOpacity>
     </ScrollView>
+    </ResponsiveContainer>
   );
 }

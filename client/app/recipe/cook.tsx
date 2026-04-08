@@ -6,6 +6,7 @@ import { Stack, useLocalSearchParams, useRouter } from "expo-router";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import { useKeepAwake } from "expo-keep-awake";
 import { getRecipe, Recipe } from "@/lib/api";
+import ResponsiveContainer from "@/components/ResponsiveContainer";
 
 export default function CookingModeScreen() {
   useKeepAwake();
@@ -32,6 +33,7 @@ export default function CookingModeScreen() {
   const isLast = currentStep === totalSteps - 1;
 
   return (
+    <ResponsiveContainer>
     <SafeAreaView style={{ flex: 1, backgroundColor: "#111827" }}>
       <Stack.Screen options={{ headerShown: false }} />
 
@@ -114,5 +116,6 @@ export default function CookingModeScreen() {
         </View>
       )}
     </SafeAreaView>
+    </ResponsiveContainer>
   );
 }

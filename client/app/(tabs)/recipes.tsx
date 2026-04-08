@@ -15,6 +15,7 @@ import FontAwesome from "@expo/vector-icons/FontAwesome";
 import * as Print from "expo-print";
 import * as Sharing from "expo-sharing";
 import { fetchRecipes, fetchRecipeCollections, Recipe } from "@/lib/api";
+import ResponsiveContainer from "@/components/ResponsiveContainer";
 
 export default function RecipesScreen() {
   const [recipes, setRecipes] = useState<Recipe[]>([]);
@@ -93,6 +94,7 @@ export default function RecipesScreen() {
   }
 
   return (
+    <ResponsiveContainer>
     <View className="flex-1 bg-background">
       {/* Search */}
       <View className="px-4 pt-3 pb-1">
@@ -228,5 +230,6 @@ export default function RecipesScreen() {
         </>
       )}
     </View>
+    </ResponsiveContainer>
   );
 }

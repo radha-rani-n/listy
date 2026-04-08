@@ -12,6 +12,7 @@ import {
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import { useRouter } from "expo-router";
 import { getMe, updateProfile, updateSettings, signOut, UserSettings } from "@/lib/api";
+import ResponsiveContainer from "@/components/ResponsiveContainer";
 
 const STRIKE_STYLES: { value: UserSettings["strikeStyle"]; label: string; desc: string }[] = [
   { value: "strikethrough", label: "Strikethrough", desc: "Line through the text" },
@@ -105,6 +106,7 @@ export default function ProfileScreen() {
   const qtyUnits = settings.measurementSystem === "metric" ? QTY_UNITS_METRIC : QTY_UNITS_IMPERIAL;
 
   return (
+    <ResponsiveContainer>
     <ScrollView className="flex-1 bg-background" contentContainerClassName="px-6 pt-6 pb-16">
       {/* Profile */}
       <View className="items-center mb-6">
@@ -225,5 +227,6 @@ export default function ProfileScreen() {
         <Text className="text-danger font-semibold text-base">Sign Out</Text>
       </TouchableOpacity>
     </ScrollView>
+    </ResponsiveContainer>
   );
 }

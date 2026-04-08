@@ -10,6 +10,7 @@ import {
 import { useRouter } from "expo-router";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import { fetchLists as apiFetchLists } from "@/lib/api";
+import ResponsiveContainer from "@/components/ResponsiveContainer";
 
 type ListRow = {
   id: string;
@@ -91,6 +92,7 @@ export default function ListsScreen() {
   }
 
   return (
+    <ResponsiveContainer>
     <View className="flex-1 bg-background">
       {lists.length === 0 ? (
         <View className="flex-1 items-center justify-center px-6">
@@ -164,5 +166,6 @@ export default function ListsScreen() {
         </>
       )}
     </View>
+    </ResponsiveContainer>
   );
 }
