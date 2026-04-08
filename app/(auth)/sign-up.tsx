@@ -39,7 +39,16 @@ export default function SignUpScreen() {
       await signUp(email.trim(), password, displayName.trim());
       router.replace("/(tabs)/lists");
     } catch (err: any) {
-      setError(err.message);
+      const code = err?.code || "";
+      if (code === "auth/email-already-in-use") {
+        setError("This email is already registered. Try signing in.");
+      } else if (code === "auth/invalid-email") {
+        setError("Please enter a valid email address.");
+      } else if (code === "auth/weak-password") {
+        setError("Password is too weak. Use at least 6 characters.");
+      } else {
+        setError(err.message || "Something went wrong.");
+      }
     }
     setLoading(false);
   }

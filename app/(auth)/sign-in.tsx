@@ -34,7 +34,16 @@ export default function SignInScreen() {
       await signIn(email.trim(), password);
       router.replace("/(tabs)/lists");
     } catch (err: any) {
-      setError(err.message);
+      const code = err?.code || "";
+      if (code === "auth/invalid-credential" || code === "auth/wrong-password" || code === "auth/user-not-found") {
+        setError("Email or password doesn't match. Please try again.");
+      } else if (code === "auth/too-many-requests") {
+        setError("Too many attempts. Please try again later.");
+      } else if (code === "auth/invalid-email") {
+        setError("Please enter a valid email address.");
+      } else {
+        setError(err.message || "Something went wrong.");
+      }
     }
     setLoading(false);
   }
