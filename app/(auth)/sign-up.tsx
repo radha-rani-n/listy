@@ -10,7 +10,8 @@ import {
   ScrollView,
 } from "react-native";
 import { Link, useRouter } from "expo-router";
-import { signUp } from "@/lib/api";
+import FontAwesome from "@expo/vector-icons/FontAwesome";
+import { signUp, signInWithGoogle } from "@/lib/api";
 import ResponsiveContainer from "@/components/ResponsiveContainer";
 
 export default function SignUpScreen() {
@@ -19,6 +20,7 @@ export default function SignUpScreen() {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+  const [googleLoading, setGoogleLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
 
   const router = useRouter();
@@ -53,6 +55,21 @@ export default function SignUpScreen() {
     setLoading(false);
   }
 
+  async function handleGoogleSignIn() {
+    setError("");
+    setGoogleLoading(true);
+    try {
+      await signInWithGoogle();
+      router.replace("/(tabs)/lists");
+    } catch (err: any) {
+      const code = err?.code || "";
+      if (code !== "auth/popup-closed-by-user") {
+        setError(err.message || "Google sign-in failed.");
+      }
+    }
+    setGoogleLoading(false);
+  }
+
   return (
     <KeyboardAvoidingView
       className="flex-1 bg-background"
@@ -75,6 +92,29 @@ export default function SignUpScreen() {
             <Text className="text-danger text-sm text-center">{error}</Text>
           </View>
         ) : null}
+
+        {/* Google Sign Up */}
+        <TouchableOpacity
+          className="bg-card border border-gray-200 rounded-lg py-3.5 flex-row items-center justify-center mb-4"
+          onPress={handleGoogleSignIn}
+          disabled={googleLoading}
+          activeOpacity={0.8}
+        >
+          {googleLoading ? (
+            <ActivityIndicator color="#4F46E5" />
+          ) : (
+            <>
+              <FontAwesome name="google" size={18} color="#DB4437" />
+              <Text className="text-textPrimary font-semibold text-base ml-2">Continue with Google</Text>
+            </>
+          )}
+        </TouchableOpacity>
+
+        <View className="flex-row items-center mb-4">
+          <View className="flex-1 h-px bg-gray-200" />
+          <Text className="text-textSecondary text-xs mx-3">or</Text>
+          <View className="flex-1 h-px bg-gray-200" />
+        </View>
 
         <Text className="text-sm font-medium text-textPrimary mb-1">
           Display Name

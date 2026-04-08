@@ -3,6 +3,9 @@ import {
   signInWithEmailAndPassword,
   signOut as firebaseSignOut,
   onAuthStateChanged,
+  sendPasswordResetEmail,
+  GoogleAuthProvider,
+  signInWithPopup,
   User,
 } from "firebase/auth";
 import {
@@ -49,6 +52,28 @@ export async function signUp(email: string, password: string, displayName: strin
 
 export async function signIn(email: string, password: string) {
   const cred = await signInWithEmailAndPassword(auth, email, password);
+  return cred.user;
+}
+
+export async function resetPassword(email: string) {
+  await sendPasswordResetEmail(auth, email);
+}
+
+export async function signInWithGoogle() {
+  const provider = new GoogleAuthProvider();
+  const cred = await signInWithPopup(auth, provider);
+
+  // Create user profile if first time
+  const snap = await getDoc(doc(db, "users", cred.user.uid));
+  if (!snap.exists()) {
+    await setDoc(doc(db, "users", cred.user.uid), {
+      email: cred.user.email || "",
+      displayName: cred.user.displayName || "",
+      avatarUrl: cred.user.photoURL || null,
+      createdAt: Timestamp.now(),
+    });
+  }
+
   return cred.user;
 }
 
