@@ -74,12 +74,12 @@ export default function PantryScreen() {
   }, [loadItems]);
 
   async function handleDelete(item: PantryItem) {
-    const confirmed = typeof window !== "undefined"
-      ? window.confirm(`Remove "${item.name}" from pantry?`)
-      : true;
-    if (!confirmed) return;
-    await deletePantryItem(item.id);
-    await loadItems();
+    try {
+      await deletePantryItem(item.id);
+      await loadItems();
+    } catch (err) {
+      console.error("Delete error:", err);
+    }
   }
 
   if (loading) {
