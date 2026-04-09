@@ -1,4 +1,5 @@
-import { useEffect, useState, useCallback } from "react";
+import { useState, useCallback } from "react";
+import { useFocusEffect } from "@react-navigation/native";
 import {
   View,
   Text,
@@ -67,9 +68,11 @@ export default function MealPlanScreen() {
     }
   }, []);
 
-  useEffect(() => {
-    loadMeals().finally(() => setLoading(false));
-  }, [loadMeals]);
+  useFocusEffect(
+    useCallback(() => {
+      loadMeals().finally(() => setLoading(false));
+    }, [loadMeals])
+  );
 
   const onRefresh = useCallback(async () => {
     setRefreshing(true);

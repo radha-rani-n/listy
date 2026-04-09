@@ -1,4 +1,5 @@
-import { useEffect, useState, useCallback } from "react";
+import { useState, useCallback } from "react";
+import { useFocusEffect } from "@react-navigation/native";
 import {
   View,
   Text,
@@ -36,9 +37,11 @@ export default function RecipesScreen() {
     }
   }, []);
 
-  useEffect(() => {
-    loadRecipes().finally(() => setLoading(false));
-  }, [loadRecipes]);
+  useFocusEffect(
+    useCallback(() => {
+      loadRecipes().finally(() => setLoading(false));
+    }, [loadRecipes])
+  );
 
   const onRefresh = useCallback(async () => {
     setRefreshing(true);

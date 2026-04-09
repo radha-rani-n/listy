@@ -1,4 +1,5 @@
-import { useEffect, useState, useCallback } from "react";
+import { useState, useCallback } from "react";
+import { useFocusEffect } from "@react-navigation/native";
 import {
   View,
   Text,
@@ -63,9 +64,11 @@ export default function PantryScreen() {
     }
   }, []);
 
-  useEffect(() => {
-    loadItems().finally(() => setLoading(false));
-  }, [loadItems]);
+  useFocusEffect(
+    useCallback(() => {
+      loadItems().finally(() => setLoading(false));
+    }, [loadItems])
+  );
 
   const onRefresh = useCallback(async () => {
     setRefreshing(true);

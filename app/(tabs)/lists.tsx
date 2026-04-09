@@ -1,4 +1,5 @@
-import { useEffect, useState, useCallback } from "react";
+import { useState, useCallback } from "react";
+import { useFocusEffect } from "@react-navigation/native";
 import {
   View,
   Text,
@@ -44,9 +45,11 @@ export default function ListsScreen() {
     }
   }, []);
 
-  useEffect(() => {
-    loadLists().finally(() => setLoading(false));
-  }, [loadLists]);
+  useFocusEffect(
+    useCallback(() => {
+      loadLists().finally(() => setLoading(false));
+    }, [loadLists])
+  );
 
   const onRefresh = useCallback(async () => {
     setRefreshing(true);
