@@ -6,7 +6,6 @@ import {
   TouchableOpacity,
   ActivityIndicator,
   RefreshControl,
-  Alert,
 } from "react-native";
 import { useRouter } from "expo-router";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
@@ -74,18 +73,13 @@ export default function PantryScreen() {
     setRefreshing(false);
   }, [loadItems]);
 
-  function handleDelete(item: PantryItem) {
-    Alert.alert("Delete", `Remove "${item.name}" from pantry?`, [
-      { text: "Cancel", style: "cancel" },
-      {
-        text: "Delete",
-        style: "destructive",
-        onPress: async () => {
-          await deletePantryItem(item.id);
-          await loadItems();
-        },
-      },
-    ]);
+  async function handleDelete(item: PantryItem) {
+    const confirmed = typeof window !== "undefined"
+      ? window.confirm(`Remove "${item.name}" from pantry?`)
+      : true;
+    if (!confirmed) return;
+    await deletePantryItem(item.id);
+    await loadItems();
   }
 
   if (loading) {
