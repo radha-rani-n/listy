@@ -17,7 +17,7 @@ export function useResponsive() {
     isTablet: screenSize === "tablet",
     isDesktop: screenSize === "desktop",
     // Content max width
-    contentWidth: screenSize === "desktop" ? 960 : screenSize === "tablet" ? "100%" : "100%",
+    contentWidth: "100%",
     // Side padding
     contentPadding: screenSize === "desktop" ? 32 : screenSize === "tablet" ? 24 : 16,
     // Grid columns for recipe cards etc.
