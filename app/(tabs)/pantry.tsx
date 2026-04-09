@@ -6,10 +6,10 @@ import {
   TouchableOpacity,
   ActivityIndicator,
   RefreshControl,
+  Alert,
 } from "react-native";
 import { useRouter } from "expo-router";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
-import SwipeToDelete from "@/components/SwipeToDelete";
 import { fetchPantryItems, deletePantryItem } from "@/lib/api";
 import ResponsiveContainer from "@/components/ResponsiveContainer";
 
@@ -74,9 +74,18 @@ export default function PantryScreen() {
     setRefreshing(false);
   }, [loadItems]);
 
-  async function handleDelete(item: PantryItem) {
-    await deletePantryItem(item.id);
-    await loadItems();
+  function handleDelete(item: PantryItem) {
+    Alert.alert("Delete", `Remove "${item.name}" from pantry?`, [
+      { text: "Cancel", style: "cancel" },
+      {
+        text: "Delete",
+        style: "destructive",
+        onPress: async () => {
+          await deletePantryItem(item.id);
+          await loadItems();
+        },
+      },
+    ]);
   }
 
   if (loading) {
@@ -128,48 +137,52 @@ export default function PantryScreen() {
               const expired = days !== null && days < 0;
 
               return (
-                <SwipeToDelete onDelete={() => handleDelete(item)}>
-                  <TouchableOpacity
-                    className={`flex-row items-center bg-card rounded-xl p-3.5 mb-2 border ${
-                      expired
-                        ? "border-red-200 bg-red-50"
-                        : expiringSoon
-                        ? "border-yellow-200 bg-yellow-50"
-                        : "border-gray-100"
-                    }`}
-                    onPress={() => router.push(`/pantry/edit?id=${item.id}`)}
-                    activeOpacity={0.7}
-                  >
-                    <View className="flex-1">
-                      <Text className="text-base font-medium text-textPrimary">
-                        {item.name}
+                <TouchableOpacity
+                  className={`flex-row items-center bg-card rounded-xl p-3.5 mb-2 border ${
+                    expired
+                      ? "border-red-200 bg-red-50"
+                      : expiringSoon
+                      ? "border-yellow-200 bg-yellow-50"
+                      : "border-gray-100"
+                  }`}
+                  onPress={() => router.push(`/pantry/edit?id=${item.id}`)}
+                  activeOpacity={0.7}
+                >
+                  <View className="flex-1">
+                    <Text className="text-base font-medium text-textPrimary">
+                      {item.name}
+                    </Text>
+                    <View className="flex-row items-center mt-0.5 gap-2">
+                      <Text className="text-xs text-textSecondary">
+                        {item.quantity}
+                        {item.unit ? ` ${item.unit}` : ""}
                       </Text>
-                      <View className="flex-row items-center mt-0.5 gap-2">
-                        <Text className="text-xs text-textSecondary">
-                          {item.quantity}
-                          {item.unit ? ` ${item.unit}` : ""}
+                      {item.expiry_date && (
+                        <Text
+                          className={`text-xs font-medium ${
+                            expired
+                              ? "text-danger"
+                              : expiringSoon
+                              ? "text-warning"
+                              : "text-textSecondary"
+                          }`}
+                        >
+                          {expired
+                            ? `Expired ${Math.abs(days!)}d ago`
+                            : days === 0
+                            ? "Expires today"
+                            : `Expires in ${days}d`}
                         </Text>
-                        {item.expiry_date && (
-                          <Text
-                            className={`text-xs font-medium ${
-                              expired
-                                ? "text-danger"
-                                : expiringSoon
-                                ? "text-warning"
-                                : "text-textSecondary"
-                            }`}
-                          >
-                            {expired
-                              ? `Expired ${Math.abs(days!)}d ago`
-                              : days === 0
-                              ? "Expires today"
-                              : `Expires in ${days}d`}
-                          </Text>
-                        )}
-                      </View>
+                      )}
                     </View>
+                  </View>
+                  <TouchableOpacity
+                    onPress={() => handleDelete(item)}
+                    className="p-2"
+                  >
+                    <FontAwesome name="trash-o" size={16} color="#EF4444" />
                   </TouchableOpacity>
-                </SwipeToDelete>
+                </TouchableOpacity>
               );
             }}
           />
