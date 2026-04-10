@@ -39,6 +39,7 @@ import {
   FavoriteItem,
 } from "@/lib/api";
 import { ALL_GROCERY_ITEMS, getCategoryForItem, learnCategory, loadUserOverrides } from "@/lib/groceryItems";
+import { confirm } from "@/lib/confirm";
 
 type ListItem = {
   id: string;
@@ -225,9 +226,7 @@ export default function ListDetailScreen() {
   }
 
   async function handleDeleteList() {
-    const confirmed = typeof window !== "undefined"
-      ? window.confirm(`Delete "${listInfo?.name}"? This cannot be undone.`)
-      : true;
+    const confirmed = await confirm("Delete List", `Delete "${listInfo?.name}"? This cannot be undone.`);
     if (!confirmed) return;
     try {
       await deleteList(id!);

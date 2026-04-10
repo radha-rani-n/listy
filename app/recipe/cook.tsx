@@ -28,6 +28,19 @@ export default function CookingModeScreen() {
     return <View className="flex-1 items-center justify-center bg-gray-900"><Text className="text-white">Recipe not found.</Text></View>;
   }
 
+  if (!recipe.steps || recipe.steps.length === 0) {
+    return (
+      <SafeAreaView style={{ flex: 1, backgroundColor: "#111827", alignItems: "center", justifyContent: "center", padding: 24 }}>
+        <FontAwesome name="info-circle" size={48} color="#6B7280" />
+        <Text style={{ color: "#fff", fontSize: 18, fontWeight: "bold", marginTop: 16, textAlign: "center" }}>No steps for this recipe</Text>
+        <Text style={{ color: "#9CA3AF", fontSize: 14, marginTop: 8, textAlign: "center" }}>Add steps to the recipe to use cooking mode.</Text>
+        <TouchableOpacity onPress={() => router.back()} style={{ marginTop: 24, backgroundColor: "#4F46E5", paddingHorizontal: 24, paddingVertical: 12, borderRadius: 10 }}>
+          <Text style={{ color: "#fff", fontWeight: "600" }}>Back to Recipe</Text>
+        </TouchableOpacity>
+      </SafeAreaView>
+    );
+  }
+
   const totalSteps = recipe.steps.length;
   const isFirst = currentStep === 0;
   const isLast = currentStep === totalSteps - 1;
