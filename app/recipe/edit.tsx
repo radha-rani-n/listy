@@ -1,16 +1,18 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   View, Text, TextInput, TouchableOpacity, ActivityIndicator,
-  ScrollView, KeyboardAvoidingView, Platform, Image, Alert,
+  ScrollView, KeyboardAvoidingView, Platform, Image,
 } from "react-native";
-import { Stack, useRouter } from "expo-router";
+import { Stack, useRouter, useLocalSearchParams } from "expo-router";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import * as ImagePicker from "expo-image-picker";
-import { addRecipe, RecipeIngredient } from "@/lib/api";
+import { getRecipe, updateRecipe, RecipeIngredient } from "@/lib/api";
 import ResponsiveContainer from "@/components/ResponsiveContainer";
 
-export default function AddRecipeScreen() {
+export default function EditRecipeScreen() {
   const router = useRouter();
+  const { id } = useLocalSearchParams<{ id: string }>();
+
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [servings, setServings] = useState("4");
@@ -20,8 +22,50 @@ export default function AddRecipeScreen() {
   const [stepsText, setStepsText] = useState("");
   const [photoUrl, setPhotoUrl] = useState<string | null>(null);
   const [collectionsText, setCollectionsText] = useState("");
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
+
+  function ingredientsToText(ingredients: RecipeIngredient[]): string {
+    return ingredients.map((i) => {
+      let line = "";
+      if (i.amount) line += i.amount + " ";
+      if (i.unit) line += i.unit + " ";
+      line += i.name;
+      return line;
+    }).join("\n");
+  }
+
+  function parseIngredients(text: string): RecipeIngredient[] {
+    return text.split("\n").map((l) => l.trim()).filter(Boolean).map((line) => {
+      const match = line.match(/^([\d./]+)\s*(cups?|tbsp|tsp|oz|lb|g|kg|ml|L|cloves?|cans?|pieces?|slices?)?\s+(.+)$/i);
+      if (match) {
+        return { amount: match[1], unit: match[2] || "", name: match[3] };
+      }
+      return { amount: "", unit: "", name: line };
+    });
+  }
+
+  useEffect(() => {
+    async function load() {
+      try {
+        const recipe = await getRecipe(id!);
+        setTitle(recipe.title);
+        setDescription(recipe.description);
+        setServings(String(recipe.servings || 4));
+        setPrepTime(recipe.prepTime);
+        setCookTime(recipe.cookTime);
+        setIngredientText(ingredientsToText(recipe.ingredients || []));
+        setStepsText((recipe.steps || []).join("\n"));
+        setPhotoUrl(recipe.photoUrl);
+        setCollectionsText((recipe.collections || []).join(", "));
+      } catch (err: any) {
+        setError(err.message);
+      }
+      setLoading(false);
+    }
+    load();
+  }, [id]);
 
   async function pickImage() {
     const result = await ImagePicker.launchImageLibraryAsync({
@@ -37,28 +81,17 @@ export default function AddRecipeScreen() {
     }
   }
 
-  function parseIngredients(text: string): RecipeIngredient[] {
-    return text.split("\n").map((l) => l.trim()).filter(Boolean).map((line) => {
-      // Try to parse "2 cups flour" → { amount: "2", unit: "cups", name: "flour" }
-      const match = line.match(/^([\d./]+)\s*(cups?|tbsp|tsp|oz|lb|g|kg|ml|L|cloves?|cans?|pieces?|slices?)?\s+(.+)$/i);
-      if (match) {
-        return { amount: match[1], unit: match[2] || "", name: match[3] };
-      }
-      return { amount: "", unit: "", name: line };
-    });
-  }
-
   async function handleSave() {
     setError("");
     if (!title.trim()) { setError("Title is required."); return; }
 
-    setLoading(true);
+    setSaving(true);
     try {
       const ingredients = parseIngredients(ingredientText);
       const steps = stepsText.split("\n").map((l) => l.trim()).filter(Boolean);
       const collections = collectionsText.split(",").map((c) => c.trim()).filter(Boolean);
 
-      const id = await addRecipe({
+      await updateRecipe(id!, {
         title: title.trim(),
         description: description.trim(),
         servings: parseInt(servings) || 4,
@@ -67,14 +100,17 @@ export default function AddRecipeScreen() {
         ingredients,
         steps,
         photoUrl,
-        sourceUrl: null,
         collections,
       });
-      router.replace(`/recipe/${id}`);
+      router.back();
     } catch (err: any) {
       setError(err.message);
     }
-    setLoading(false);
+    setSaving(false);
+  }
+
+  if (loading) {
+    return <View className="flex-1 items-center justify-center bg-background"><ActivityIndicator size="large" color="#4F46E5" /></View>;
   }
 
   return (
@@ -82,10 +118,10 @@ export default function AddRecipeScreen() {
     <KeyboardAvoidingView className="flex-1 bg-background" behavior={Platform.OS === "ios" ? "padding" : "height"}>
       <Stack.Screen
         options={{
-          title: "Add Recipe",
+          title: "Edit Recipe",
           headerRight: () => (
-            <TouchableOpacity onPress={handleSave} disabled={loading} style={{ marginRight: 4 }}>
-              {loading ? <ActivityIndicator color="#4F46E5" /> : <Text style={{ color: "#4F46E5", fontWeight: "600", fontSize: 16 }}>Save</Text>}
+            <TouchableOpacity onPress={handleSave} disabled={saving} style={{ marginRight: 4 }}>
+              {saving ? <ActivityIndicator color="#4F46E5" /> : <Text style={{ color: "#4F46E5", fontWeight: "600", fontSize: 16 }}>Save</Text>}
             </TouchableOpacity>
           ),
         }}
@@ -139,8 +175,8 @@ export default function AddRecipeScreen() {
 
         {error ? <View className="bg-red-50 border border-red-200 rounded-lg p-3 mb-4"><Text className="text-danger text-sm text-center">{error}</Text></View> : null}
 
-        <TouchableOpacity className="bg-primary rounded-lg py-3.5 items-center" onPress={handleSave} disabled={loading} activeOpacity={0.8}>
-          {loading ? <ActivityIndicator color="#fff" /> : <Text className="text-white font-semibold text-base">Save Recipe</Text>}
+        <TouchableOpacity className="bg-primary rounded-lg py-3.5 items-center" onPress={handleSave} disabled={saving} activeOpacity={0.8}>
+          {saving ? <ActivityIndicator color="#fff" /> : <Text className="text-white font-semibold text-base">Save Changes</Text>}
         </TouchableOpacity>
       </ScrollView>
     </KeyboardAvoidingView>

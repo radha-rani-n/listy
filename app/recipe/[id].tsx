@@ -122,6 +122,9 @@ export default function RecipeDetailScreen() {
               <TouchableOpacity onPress={() => router.push(`/recipe/cook?id=${id}`)}>
                 <FontAwesome name="fire" size={18} color="#EF4444" />
               </TouchableOpacity>
+              <TouchableOpacity onPress={() => router.push(`/recipe/edit?id=${id}`)}>
+                <FontAwesome name="pencil" size={18} color="#4F46E5" />
+              </TouchableOpacity>
               <TouchableOpacity onPress={handleDelete}>
                 <FontAwesome name="trash-o" size={18} color="#EF4444" />
               </TouchableOpacity>
