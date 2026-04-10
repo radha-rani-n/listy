@@ -440,17 +440,17 @@ export default function ListDetailScreen() {
           title: listInfo?.name || "",
           headerShown: true,
           headerRight: () => (
-            <View style={{ flexDirection: "row", alignItems: "center", gap: 14 }}>
-              <TouchableOpacity onPress={printOrShareList}>
+            <View style={{ flexDirection: "row", alignItems: "center", gap: 18, paddingRight: 16 }}>
+              <TouchableOpacity onPress={printOrShareList} hitSlop={10}>
                 <FontAwesome name="share-square-o" size={18} color="#4F46E5" />
               </TouchableOpacity>
-              <TouchableOpacity onPress={copyListToClipboard}>
+              <TouchableOpacity onPress={copyListToClipboard} hitSlop={10}>
                 <FontAwesome name="copy" size={18} color="#4F46E5" />
               </TouchableOpacity>
-              <TouchableOpacity onPress={() => router.push(`/list/invite?listId=${id}`)}>
+              <TouchableOpacity onPress={() => router.push(`/list/invite?listId=${id}`)} hitSlop={10}>
                 <FontAwesome name="user-plus" size={18} color="#4F46E5" />
               </TouchableOpacity>
-              <TouchableOpacity onPress={handleDeleteList}>
+              <TouchableOpacity onPress={handleDeleteList} hitSlop={10}>
                 <FontAwesome name="trash-o" size={18} color="#EF4444" />
               </TouchableOpacity>
             </View>

@@ -115,17 +115,17 @@ export default function RecipeDetailScreen() {
         options={{
           title: recipe.title,
           headerRight: () => (
-            <View style={{ flexDirection: "row", gap: 14, alignItems: "center" }}>
-              <TouchableOpacity onPress={shareRecipe}>
+            <View style={{ flexDirection: "row", gap: 18, alignItems: "center", paddingRight: 16 }}>
+              <TouchableOpacity onPress={shareRecipe} hitSlop={10}>
                 <FontAwesome name="share" size={18} color="#4F46E5" />
               </TouchableOpacity>
-              <TouchableOpacity onPress={() => router.push(`/recipe/cook?id=${id}`)}>
+              <TouchableOpacity onPress={() => router.push(`/recipe/cook?id=${id}`)} hitSlop={10}>
                 <FontAwesome name="fire" size={18} color="#EF4444" />
               </TouchableOpacity>
-              <TouchableOpacity onPress={() => router.push(`/recipe/edit?id=${id}`)}>
+              <TouchableOpacity onPress={() => router.push(`/recipe/edit?id=${id}`)} hitSlop={10}>
                 <FontAwesome name="pencil" size={18} color="#4F46E5" />
               </TouchableOpacity>
-              <TouchableOpacity onPress={handleDelete}>
+              <TouchableOpacity onPress={handleDelete} hitSlop={10}>
                 <FontAwesome name="trash-o" size={18} color="#EF4444" />
               </TouchableOpacity>
             </View>

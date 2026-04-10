@@ -23,7 +23,7 @@ export default function ListLayout() {
       screenOptions={{
         headerShown: true,
         headerLeft: () => (
-          <TouchableOpacity onPress={goBack} style={{ marginRight: 12, paddingHorizontal: 8, paddingVertical: 4 }}>
+          <TouchableOpacity onPress={goBack} style={{ marginLeft: 16, marginRight: 12, paddingHorizontal: 8, paddingVertical: 4 }}>
             <View style={{ flexDirection: "row", alignItems: "center" }}>
               <FontAwesome name="chevron-left" size={16} color="#4F46E5" />
               <Text style={{ color: "#4F46E5", fontSize: 16, marginLeft: 6, fontWeight: "500" }}>Back</Text>

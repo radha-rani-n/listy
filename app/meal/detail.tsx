@@ -79,7 +79,7 @@ export default function MealDetailScreen() {
   return (
     <ResponsiveContainer>
     <KeyboardAvoidingView className="flex-1 bg-background" behavior={Platform.OS === "ios" ? "padding" : "height"}>
-      <Stack.Screen options={{ title: meal.recipe_name, headerShown: true, headerRight: () => <TouchableOpacity className="mr-2" onPress={handleDelete}><FontAwesome name="trash-o" size={20} color="#EF4444" /></TouchableOpacity> }} />
+      <Stack.Screen options={{ title: meal.recipe_name, headerShown: true, headerRight: () => <TouchableOpacity onPress={handleDelete} hitSlop={10} style={{ paddingRight: 16 }}><FontAwesome name="trash-o" size={20} color="#EF4444" /></TouchableOpacity> }} />
       <ScrollView contentContainerClassName="px-6 pt-6 pb-10">
         <View className="bg-card rounded-xl border border-gray-100 p-4 mb-4">
           <Text className="text-2xl font-bold text-textPrimary">{meal.recipe_name}</Text>
