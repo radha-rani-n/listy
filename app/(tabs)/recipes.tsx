@@ -15,7 +15,7 @@ import { useRouter } from "expo-router";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import * as Print from "expo-print";
 import * as Sharing from "expo-sharing";
-import { fetchRecipes, fetchRecipeCollections, Recipe } from "@/lib/api";
+import { fetchRecipes, getCollectionsFromRecipes, Recipe } from "@/lib/api";
 import ResponsiveContainer from "@/components/ResponsiveContainer";
 
 export default function RecipesScreen() {
@@ -29,9 +29,9 @@ export default function RecipesScreen() {
 
   const loadRecipes = useCallback(async () => {
     try {
-      const [r, c] = await Promise.all([fetchRecipes(), fetchRecipeCollections()]);
+      const r = await fetchRecipes();
       setRecipes(r);
-      setCollections(c);
+      setCollections(getCollectionsFromRecipes(r));
     } catch (err) {
       console.error(err);
     }

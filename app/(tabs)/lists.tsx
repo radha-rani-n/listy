@@ -1,5 +1,4 @@
-import { useState, useCallback } from "react";
-import { useFocusEffect } from "@react-navigation/native";
+import { useState, useCallback, useEffect } from "react";
 import {
   View,
   Text,
@@ -10,7 +9,7 @@ import {
 } from "react-native";
 import { useRouter } from "expo-router";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
-import { fetchLists as apiFetchLists } from "@/lib/api";
+import { fetchLists as apiFetchLists, subscribeToLists } from "@/lib/api";
 import { requireAuth } from "@/lib/authGuard";
 import ResponsiveContainer from "@/components/ResponsiveContainer";
 
@@ -36,26 +35,21 @@ export default function ListsScreen() {
   const [collapsedFolders, setCollapsedFolders] = useState<Set<string>>(new Set());
   const router = useRouter();
 
-  const loadLists = useCallback(async () => {
-    try {
-      const data = await apiFetchLists();
+  // Realtime listener — auto-updates when lists change
+  useEffect(() => {
+    const unsubscribe = subscribeToLists((data) => {
       setLists(data);
-    } catch (err) {
-      console.error("fetchLists error:", err);
-    }
+      setLoading(false);
+    });
+    return unsubscribe;
   }, []);
-
-  useFocusEffect(
-    useCallback(() => {
-      loadLists().finally(() => setLoading(false));
-    }, [loadLists])
-  );
 
   const onRefresh = useCallback(async () => {
     setRefreshing(true);
-    await loadLists();
+    const data = await apiFetchLists();
+    setLists(data);
     setRefreshing(false);
-  }, [loadLists]);
+  }, []);
 
   function toggleFolder(folder: string) {
     setCollapsedFolders((prev) => {

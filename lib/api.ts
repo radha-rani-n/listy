@@ -26,6 +26,7 @@ import {
   Timestamp,
   Unsubscribe,
   limit,
+  writeBatch,
 } from "firebase/firestore";
 import { auth, db } from "./firebase";
 
@@ -152,6 +153,30 @@ export async function updateSettings(settings: Partial<UserSettings>) {
 }
 
 // --- Lists ---
+
+export function subscribeToLists(callback: (lists: any[]) => void): Unsubscribe {
+  const user = auth.currentUser;
+  if (!user) { callback([]); return () => {}; }
+
+  const q = query(
+    collection(db, "lists"),
+    where("memberIds", "array-contains", user.uid)
+  );
+  return onSnapshot(q, (snap) => {
+    callback(snap.docs.map((d) => {
+      const data = d.data() as any;
+      return {
+        id: d.id,
+        name: data.name,
+        type: data.type,
+        folder: data.folder || null,
+        icon: data.icon || "shopping-cart",
+        color: data.color || "#4F46E5",
+        member_count: (data.memberIds || []).length,
+      };
+    }));
+  });
+}
 
 export async function fetchLists() {
   const user = auth.currentUser;
@@ -511,16 +536,17 @@ export async function addIngredientsToList(
   const user = auth.currentUser;
   if (!user) throw new Error("Not authenticated");
 
-  // Get current max sort order
   const items = await fetchListItems(listId);
   let sortOrder = items.length > 0
-    ? Math.max(...items.map((i: any) => i.sortOrder || 0))
+    ? Math.max(...items.map((i: any) => i.sort_order || 0))
     : 0;
 
+  const batch = writeBatch(db);
   for (const name of ingredients) {
     if (!name.trim()) continue;
     sortOrder++;
-    await addDoc(collection(db, "lists", listId, "items"), {
+    const ref = doc(collection(db, "lists", listId, "items"));
+    batch.set(ref, {
       name: name.trim(),
       quantity: "1",
       category: null,
@@ -531,6 +557,7 @@ export async function addIngredientsToList(
       createdAt: Timestamp.now(),
     });
   }
+  await batch.commit();
 }
 
 // --- Push Tokens ---
@@ -689,8 +716,7 @@ export async function deleteRecipe(id: string): Promise<void> {
   await deleteDoc(doc(db, "recipes", id));
 }
 
-export async function fetchRecipeCollections(): Promise<string[]> {
-  const recipes = await fetchRecipes();
+export function getCollectionsFromRecipes(recipes: Recipe[]): string[] {
   const all = recipes.flatMap((r) => r.collections || []);
   return [...new Set(all)].sort();
 }
@@ -709,11 +735,13 @@ export async function addRecipeIngredientsToList(
     ? Math.max(...existingItems.map((i: any) => i.sort_order || 0))
     : 0;
 
+  const batch = writeBatch(db);
   for (const ing of recipe.ingredients) {
     sortOrder++;
     const scaledAmount = ing.amount ? String(parseFloat(ing.amount) * scale || ing.amount) : "1";
     const name = ing.unit ? `${ing.name} (${scaledAmount} ${ing.unit})` : ing.name;
-    await addDoc(collection(db, "lists", listId, "items"), {
+    const ref = doc(collection(db, "lists", listId, "items"));
+    batch.set(ref, {
       name,
       quantity: scaledAmount,
       category: null,
@@ -724,4 +752,5 @@ export async function addRecipeIngredientsToList(
       createdAt: Timestamp.now(),
     });
   }
+  await batch.commit();
 }

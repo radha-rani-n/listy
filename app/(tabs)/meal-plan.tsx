@@ -127,18 +127,17 @@ export default function MealPlanScreen() {
       const defaultCal = calendars.find((c) => c.allowsModifications) || calendars[0];
       if (!defaultCal) return;
 
-      for (const meal of meals) {
+      const hourMap: Record<string, number> = { breakfast: 8, lunch: 12, dinner: 18, snack: 15 };
+      await Promise.all(meals.map((meal) => {
         const date = new Date(meal.date + "T12:00:00");
-        const hourMap: Record<string, number> = { breakfast: 8, lunch: 12, dinner: 18, snack: 15 };
         date.setHours(hourMap[meal.meal_type] || 12, 0, 0, 0);
-
-        await Calendar.createEventAsync(defaultCal.id, {
+        return Calendar.createEventAsync(defaultCal.id, {
           title: `${MEAL_LABELS[meal.meal_type]}: ${meal.recipe_name}`,
           startDate: date,
           endDate: new Date(date.getTime() + 60 * 60 * 1000),
           notes: meal.notes || undefined,
         });
-      }
+      }));
     } catch (err) {
       console.error("Calendar sync error:", err);
     }

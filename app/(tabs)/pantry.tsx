@@ -78,10 +78,15 @@ export default function PantryScreen() {
 
   async function handleDelete(item: PantryItem) {
     try {
+      // Optimistic update — remove from UI immediately
+      setSections((prev) =>
+        prev.map((s) => ({ ...s, data: s.data.filter((i) => i.id !== item.id) }))
+          .filter((s) => s.data.length > 0)
+      );
       await deletePantryItem(item.id);
-      await loadItems();
     } catch (err) {
       console.error("Delete error:", err);
+      await loadItems(); // Revert on error
     }
   }
 
