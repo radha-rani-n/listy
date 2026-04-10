@@ -24,6 +24,7 @@ import SwipeToDelete from "@/components/SwipeToDelete";
 import ResponsiveContainer from "@/components/ResponsiveContainer";
 import {
   getList,
+  deleteList,
   fetchListItems,
   subscribeToListItems,
   addListItem,
@@ -221,6 +222,19 @@ export default function ListDetailScreen() {
 
   async function handleDelete(item: ListItem) {
     await deleteListItem(id!, item.id);
+  }
+
+  async function handleDeleteList() {
+    const confirmed = typeof window !== "undefined"
+      ? window.confirm(`Delete "${listInfo?.name}"? This cannot be undone.`)
+      : true;
+    if (!confirmed) return;
+    try {
+      await deleteList(id!);
+      router.replace("/(tabs)/lists");
+    } catch (err) {
+      console.error("Delete list error:", err);
+    }
   }
 
   async function toggleFavorite(item: ListItem) {
@@ -436,6 +450,9 @@ export default function ListDetailScreen() {
               </TouchableOpacity>
               <TouchableOpacity onPress={() => router.push(`/list/invite?listId=${id}`)}>
                 <FontAwesome name="user-plus" size={18} color="#4F46E5" />
+              </TouchableOpacity>
+              <TouchableOpacity onPress={handleDeleteList}>
+                <FontAwesome name="trash-o" size={18} color="#EF4444" />
               </TouchableOpacity>
             </View>
           ),
