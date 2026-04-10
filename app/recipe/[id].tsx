@@ -61,10 +61,16 @@ export default function RecipeDetailScreen() {
   }
 
   async function handleDelete() {
-    Alert.alert("Delete Recipe", "Are you sure?", [
-      { text: "Cancel", style: "cancel" },
-      { text: "Delete", style: "destructive", onPress: async () => { await deleteRecipe(id!); router.back(); } },
-    ]);
+    const confirmed = typeof window !== "undefined"
+      ? window.confirm("Delete this recipe? This cannot be undone.")
+      : true;
+    if (!confirmed) return;
+    try {
+      await deleteRecipe(id!);
+      router.replace("/(tabs)/recipes");
+    } catch (err) {
+      console.error("Delete recipe error:", err);
+    }
   }
 
   async function handleAddToList(listId: string) {

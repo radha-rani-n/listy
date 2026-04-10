@@ -61,10 +61,16 @@ export default function MealDetailScreen() {
   }
 
   async function handleDelete() {
-    Alert.alert("Delete Meal", "Remove this meal from your plan?", [
-      { text: "Cancel", style: "cancel" },
-      { text: "Delete", style: "destructive", onPress: async () => { await deleteMeal(id!); router.back(); } },
-    ]);
+    const confirmed = typeof window !== "undefined"
+      ? window.confirm("Remove this meal from your plan?")
+      : true;
+    if (!confirmed) return;
+    try {
+      await deleteMeal(id!);
+      router.back();
+    } catch (err) {
+      console.error("Delete meal error:", err);
+    }
   }
 
   if (loading) return <View className="flex-1 items-center justify-center bg-background"><ActivityIndicator size="large" color="#4F46E5" /></View>;
